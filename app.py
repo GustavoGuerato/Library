@@ -1,8 +1,19 @@
+import password
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from login import Ui_MainWindow as Ui_Login
 from signup import Ui_CadastroWindow
 from mainmenu import Ui_MainWindow as Ui_MainMenu
+import mysql.connector
+
+conexao = mysql.connector.connect(
+    host="127.0.0.1",
+    user="root",
+    password="gg08142325",
+    database="test"
+)
+
+cursor = conexao.cursor()
 
 
 class Cadastro(QMainWindow, Ui_CadastroWindow):
@@ -28,7 +39,8 @@ class Login(QMainWindow, Ui_Login):
         if not self.NomeInput and self.SenhaInput:
             self.InputErro.setText('preencha todos os dados')
 
-    def logar(self):
+    @staticmethod
+    def logar():
         inicial.show()
 
     @staticmethod
@@ -36,6 +48,8 @@ class Login(QMainWindow, Ui_Login):
         cadastro.show()
 
 
+cursor.close()
+conexao.close()
 if __name__ == '__main__':
     qt = QApplication(sys.argv)
     login = Login()
