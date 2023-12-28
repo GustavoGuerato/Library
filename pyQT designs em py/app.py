@@ -14,7 +14,7 @@ class JanelaComIcone(QMainWindow):
         self.definir_icone_janela()
 
     def definir_icone_janela(self):
-        icone = QIcon('LibraConnect.ico')
+        icone = QIcon('../LibraConnect.ico')
         self.setWindowIcon(icone)
 
 
