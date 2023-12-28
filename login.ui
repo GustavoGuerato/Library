@@ -19,6 +19,9 @@
   <property name="windowTitle">
    <string>Log-in Biblioteca</string>
   </property>
+  <property name="windowIcon">
+   <iconset theme="system-search"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="NomeLabel">
     <property name="geometry">
@@ -41,6 +44,11 @@
       <width>261</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit{
+border-radius: 10px
+}</string>
     </property>
    </widget>
    <widget class="QLabel" name="SenhaLabel">
@@ -65,6 +73,10 @@
       <height>22</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit{
+border-radius: 10px}</string>
+    </property>
    </widget>
    <widget class="QPushButton" name="loginBtn">
     <property name="geometry">
@@ -75,6 +87,18 @@
       <height>41</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+                border-radius: 10px;
+                padding: 10px;
+                background-color: #7FF517;
+                color: #ffffff;
+            }
+
+            QPushButton:hover {
+                background-color: #71D716;
+            }</string>
+    </property>
     <property name="text">
      <string>Log-in</string>
     </property>
@@ -82,11 +106,23 @@
    <widget class="QPushButton" name="SenhaBtn">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>240</x>
       <y>250</y>
-      <width>91</width>
+      <width>101</width>
       <height>41</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+                border-radius: 10px;
+                padding: 10px;
+                background-color: #FF0000;
+                color: #ffffff;
+            }
+
+            QPushButton:hover {
+                background-color: #ED0000;
+            }</string>
     </property>
     <property name="text">
      <string>Esqueci a senha</string>
@@ -101,6 +137,18 @@
       <height>41</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+                border-radius: 10px;
+                padding: 10px;
+                background-color: #3498db;
+                color: #ffffff;
+            }
+
+            QPushButton:hover {
+                background-color: #2980b9;
+            }</string>
+    </property>
     <property name="text">
      <string>Criar Conta</string>
     </property>
@@ -108,14 +156,17 @@
    <widget class="QLabel" name="InputErro">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>90</x>
       <y>200</y>
-      <width>49</width>
-      <height>16</height>
+      <width>191</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
      <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
