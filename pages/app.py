@@ -25,9 +25,12 @@ class EsqueciSenha(JanelaComIcone, Ui_esqueciSenha):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+        self.ChangeButton.clicked.connect(self.trocar_senha)
 
+    def trocar_senha(self):
+        nome = self.NomeInput.text()
+        email = self.EmailInput.text()
 
-    def trocar_senha(self, nome, email):
         if self.verifica_dados(nome, email):
             nova_senha_temporaria = self.gerar_senha()
             try:
@@ -35,7 +38,7 @@ class EsqueciSenha(JanelaComIcone, Ui_esqueciSenha):
                 cursor.execute(update_senha, (nova_senha_temporaria, nome, email))
                 conexao.commit()
                 print("Senha temporária trocada com sucesso!")
-                self.NovaSenhaInput.setText(f'a sua senha é {self.gerar_senha}')
+                self.NovaSenhaInput.setText(f'A sua nova senha é {nova_senha_temporaria}')
                 return nova_senha_temporaria
             except mysql.connector.Error as err:
                 print(f"Erro ao trocar a senha temporária: {err}")
@@ -108,7 +111,7 @@ class Login(JanelaComIcone, Ui_Login):
         senha = self.SenhaInput.text()
 
         if self.verificalogin(nome, senha):
-            self.InputErro.setText('login Bem Sucedido')
+            self.InputErro.setText('Login Bem Sucedido')
             sleep(5)
             inicial.show()
             login.close()

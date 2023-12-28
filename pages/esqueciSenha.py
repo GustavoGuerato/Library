@@ -15,9 +15,9 @@ class Ui_MainWindow(object):
         MainWindow.resize(400, 400)
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.pushButton = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(110, 300, 151, 51))
-        self.pushButton.setObjectName("pushButton")
+        self.ChangeButton = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.ChangeButton.setGeometry(QtCore.QRect(110, 300, 151, 51))
+        self.ChangeButton.setObjectName("ChangeButton")
         self.EmailInput = QtWidgets.QLineEdit(parent=self.centralwidget)
         self.EmailInput.setGeometry(QtCore.QRect(200, 60, 161, 22))
         self.EmailInput.setObjectName("EmailInput")
@@ -44,6 +44,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.pushButton.setText(_translate("MainWindow", "Recuperar Senha"))
+        self.ChangeButton.setText(_translate("MainWindow", "Recuperar Senha"))
         self.EmailLabel.setText(_translate("MainWindow", "Informe o email:"))
         self.NomeLabel.setText(_translate("MainWindow", "Nome:"))
