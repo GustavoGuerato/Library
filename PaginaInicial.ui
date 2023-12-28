@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>750</width>
+    <height>500</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Pagina inicial</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>10</y>
+      <width>81</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>750</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuLivros_Disponiveis">
+    <property name="title">
+     <string>Livros Disponiveis</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionPrincipais_Livros_do_dia"/>
+    <addaction name="actionPrincipais_livros_para_voce"/>
+    <addaction name="actionLivros_que_est_o_alugados"/>
+   </widget>
+   <widget class="QMenu" name="menuCarrinho">
+    <property name="title">
+     <string>Carrinho</string>
+    </property>
+    <addaction name="actionVerificar_Carrinho"/>
+   </widget>
+   <widget class="QMenu" name="menuConta">
+    <property name="title">
+     <string>Conta</string>
+    </property>
+    <addaction name="actionLivros_que_voce_alugou"/>
+    <addaction name="actionpreferencias"/>
+    <addaction name="actionconfigura_oes_da_conta"/>
+   </widget>
+   <widget class="QMenu" name="menuConfigura_oes">
+    <property name="title">
+     <string>Configuraçoes</string>
+    </property>
+    <addaction name="actionConfigura_oes_gerais"/>
+   </widget>
+   <widget class="QMenu" name="menuComo_Funciona">
+    <property name="title">
+     <string>Como Funciona?</string>
+    </property>
+    <addaction name="actionComo_nosso_software_funciona"/>
+   </widget>
+   <addaction name="menuLivros_Disponiveis"/>
+   <addaction name="menuCarrinho"/>
+   <addaction name="menuConta"/>
+   <addaction name="menuConfigura_oes"/>
+   <addaction name="menuComo_Funciona"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionVerificar_Carrinho">
+   <property name="text">
+    <string>Verificar Carrinho</string>
+   </property>
+  </action>
+  <action name="actionPrincipais_Livros_do_dia">
+   <property name="text">
+    <string>Principais Livros do dia</string>
+   </property>
+  </action>
+  <action name="actionPrincipais_livros_para_voce">
+   <property name="text">
+    <string>Principais livros para voce</string>
+   </property>
+  </action>
+  <action name="actionLivros_que_est_o_alugados">
+   <property name="text">
+    <string>Livros que estão alugados</string>
+   </property>
+  </action>
+  <action name="actionLivros_que_voce_alugou">
+   <property name="text">
+    <string>Livros que voce alugou</string>
+   </property>
+  </action>
+  <action name="actionpreferencias">
+   <property name="text">
+    <string>preferencias</string>
+   </property>
+  </action>
+  <action name="actionconfigura_oes_da_conta">
+   <property name="text">
+    <string>Configuraçoes da conta</string>
+   </property>
+  </action>
+  <action name="actionConfigura_oes_gerais">
+   <property name="text">
+    <string>Configuraçoes gerais</string>
+   </property>
+  </action>
+  <action name="actionComo_nosso_software_funciona">
+   <property name="text">
+    <string>Como nosso software funciona</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
