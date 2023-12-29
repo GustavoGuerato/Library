@@ -1,14 +1,15 @@
-import sys
 from time import sleep
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QApplication, QMainWindow, QListWidgetItem
 from PyQt6.QtGui import QIcon
 from login import Ui_MainWindow as Ui_Login
 from signup import Ui_CadastroWindow
-from mainmenu import Ui_MainWindow as Ui_MainMenu
+from Livros import Ui_MainWindow as Ui_livros
+from PaginaInicial import Ui_MainWindow as Ui_MainMenu
 from esqueciSenha import Ui_MainWindow as Ui_esqueciSenha
 import mysql.connector
 import string
 import random
+import sys
 
 
 class JanelaComIcone(QMainWindow):
@@ -44,12 +45,14 @@ class EsqueciSenha(JanelaComIcone, Ui_esqueciSenha):
                 print(f"Erro ao trocar a senha temporária: {err}")
         return None
 
-    def gerar_senha(self, tamanho=12):
+    @staticmethod
+    def gerar_senha(tamanho=12):
         caracteres = string.ascii_letters + string.digits + string.punctuation
         senha = ''.join(random.choice(caracteres) for _ in range(tamanho))
         return senha
 
-    def verifica_dados(self, nome, email):
+    @staticmethod
+    def verifica_dados(nome, email):
         try:
             query = 'SELECT * FROM clientes WHERE NomeCliente = %s AND Email = %s'
             cursor.execute(query, (nome, email))
@@ -96,6 +99,31 @@ class Inicial(JanelaComIcone, Ui_MainMenu):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+        self.LivrosBtn.clicked.connect(self.abrir_livros)
+        self.livros = Livros()
+
+    def abrir_livros(self):
+        self.livros.show()
+
+
+class Livros(JanelaComIcone, Ui_livros):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
+        self.carregar_livros()
+
+    def carregar_livros(self):
+        try:
+            query = 'SELECT titulo FROM livros'
+            cursor.execute(query)
+            livros = cursor.fetchall()
+
+            for livro in livros:
+                item = QListWidgetItem(livro[0])
+                self.listaLivros.addItem(item)
+
+        except mysql.connector.Error as err:
+            print(f"Erro ao carregar livros: {err}")
 
 
 class Login(JanelaComIcone, Ui_Login):
