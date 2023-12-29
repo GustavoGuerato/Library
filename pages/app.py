@@ -111,6 +111,7 @@ class Livros(JanelaComIcone, Ui_livros):
         super().__init__(parent)
         self.setupUi(self)
         self.carregar_livros()
+        self.pushButton_2.clicked.connect(self.emprestar_livro)
 
     def carregar_livros(self):
         try:
@@ -124,6 +125,17 @@ class Livros(JanelaComIcone, Ui_livros):
 
         except mysql.connector.Error as err:
             print(f"Erro ao carregar livros: {err}")
+
+
+    def emprestar_livro(self, item):
+        livro_id = self.listaLivros.currentItem().text().split('-')[0].strip()
+        try:
+            update_disponibilidade = 'UPDATE livros SET disponivel = 0 WHERE id = %s'
+            cursor.execute(update_disponibilidade, (livro_id,))
+            conexao.commit()
+            print(f"Livro com ID {livro_id} emprestado com sucesso!")
+        except mysql.connector.Error as err:
+            print(f"Erro ao marcar livro como emprestado: {err}")
 
 
 class Login(JanelaComIcone, Ui_Login):
