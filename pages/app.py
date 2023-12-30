@@ -6,6 +6,7 @@ from signup import Ui_CadastroWindow
 from Livros import Ui_MainWindow as Ui_livros
 from PaginaInicial import Ui_MainWindow as Ui_MainMenu
 from esqueciSenha import Ui_MainWindow as Ui_esqueciSenha
+from Carrinho import Ui_MainWindow as Ui_carrinho
 import mysql.connector
 import string
 import random
@@ -87,13 +88,25 @@ class Cadastro(JanelaComIcone, Ui_CadastroWindow):
             'INSERT INTO clientes (NomeCliente, SobrenomeCliente, Email, Telefone, Senha) VALUES (%s, %s, %s, %s, %s)')
         dados_cliente = (nome, sobrenome, email, telefone, senha)
 
+        check_duplicate_query = (
+            'SELECT COUNT(*) FROM clientes WHERE NomeCliente = %s AND SobrenomeCliente = %s AND Email = %s AND '
+            'Telefone = %s AND Senha = %s'
+        )
+        check_data = (nome, sobrenome, email, telefone, senha)
+
         try:
-            cursor.execute(add_cliente, dados_cliente)
-            conexao.commit()
-            print("Cliente adicionado com sucesso!")
+            cursor.execute(check_duplicate_query, check_data)
+            result = cursor.fetchone()
+
+            if result[0] > 0:
+                print("Erro: Cliente com dados duplicados já existe no banco de dados.")
+            else:
+                cursor.execute(add_cliente, dados_cliente)
+                conexao.commit()
+                print("Cliente adicionado com sucesso!")
+
         except mysql.connector.Error as err:
             print(f"Erro ao adicionar cliente: {err}")
-
 
 class Inicial(JanelaComIcone, Ui_MainMenu):
     def __init__(self, parent=None):
@@ -126,16 +139,21 @@ class Livros(JanelaComIcone, Ui_livros):
         except mysql.connector.Error as err:
             print(f"Erro ao carregar livros: {err}")
 
+    def emprestar_livro(self):
+        if self.listaLivros.currentItem():
+            livro_id = self.listaLivros.currentItem().text().split('-')[0].strip()
 
-    def emprestar_livro(self, item):
-        livro_id = self.listaLivros.currentItem().text().split('-')[0].strip()
-        try:
-            update_disponibilidade = 'UPDATE livros SET disponivel = 0 WHERE id = %s'
-            cursor.execute(update_disponibilidade, (livro_id,))
-            conexao.commit()
-            print(f"Livro com ID {livro_id} emprestado com sucesso!")
-        except mysql.connector.Error as err:
-            print(f"Erro ao marcar livro como emprestado: {err}")
+            try:
+                update_disponibilidade = 'UPDATE livros SET status = 0 WHERE id = %s'
+                cursor.execute(update_disponibilidade, (livro_id,))
+                print(f"Livro com ID {livro_id} emprestado com sucesso!")
+                conexao.commit()
+            except mysql.connector.Error as err:
+                print(f"Erro ao marcar livro como emprestado: {err}")
+                conexao.rollback()
+            except Exception as e:
+                print(f"Erro desconhecido: {e}")
+                conexao.rollback()
 
 
 class Login(JanelaComIcone, Ui_Login):
