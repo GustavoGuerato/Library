@@ -23,12 +23,6 @@ class JanelaComIcone(QMainWindow):
         self.setWindowIcon(icone)
 
 
-class Carrinho(JanelaComIcone, Ui_carrinho):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setupUi(self)
-
-
 class EsqueciSenha(JanelaComIcone, Ui_esqueciSenha):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -130,6 +124,7 @@ class Inicial(JanelaComIcone, Ui_MainMenu):
     def abrir_carrinho(self):
         self.carrinho.show()
 
+
 class Livros(JanelaComIcone, Ui_livros):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -140,9 +135,11 @@ class Livros(JanelaComIcone, Ui_livros):
 
     def carregar_livros(self):
         try:
-            query = 'SELECT titulo FROM livros'
+            query = 'SELECT Titulo FROM livros WHERE status = 1 AND carrinho = 0'
             cursor.execute(query)
             livros = cursor.fetchall()
+
+            self.listaLivros.clear()
 
             for livro in livros:
                 item = QListWidgetItem(livro[0])
@@ -150,6 +147,27 @@ class Livros(JanelaComIcone, Ui_livros):
 
         except mysql.connector.Error as err:
             print(f"Erro ao carregar livros: {err}")
+
+    class Carrinho(JanelaComIcone, Ui_carrinho):
+        def __init__(self, parent=None):
+            super().__init__(parent)
+            self.setupUi(self)
+            self.carregar_livros_carrinho()
+
+        def carregar_livros_carrinho(self):
+            try:
+                query = 'SELECT Titulo FROM livros WHERE status = 1 AND carrinho = 1'
+                cursor.execute(query)
+                livros = cursor.fetchall()
+
+                self.listaCarrinho.clear()
+
+                for livro in livros:
+                    item = QListWidgetItem(livro[0])
+                    self.listaCarrinho.addItem(item)
+
+            except mysql.connector.Error as err:
+                print(f"Erro ao carregar livros do carrinho: {err}")
 
     def emprestar_livro(self):
         if self.listaLivros.currentItem():
@@ -182,6 +200,28 @@ class Livros(JanelaComIcone, Ui_livros):
             except Exception as e:
                 print(f"Erro desconhecido: {e}")
                 conexao.rollback()
+
+
+class Carrinho(JanelaComIcone, Ui_carrinho):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
+        self.carregar_livros_carrinho()
+
+    def carregar_livros_carrinho(self):
+        try:
+            query = 'SELECT Titulo FROM livros WHERE status = 0 AND carrinho = 1'
+            cursor.execute(query)
+            livros = cursor.fetchall()
+
+            self.listaCarrinho.clear()
+
+            for livro in livros:
+                item = QListWidgetItem(livro[0])
+                self.listaCarrinho.addItem(item)
+
+        except mysql.connector.Error as err:
+            print(f"Erro ao carregar livros do carrinho: {err}")
 
 
 class Login(JanelaComIcone, Ui_Login):
