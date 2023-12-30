@@ -26,49 +26,43 @@ class JanelaComIcone(QMainWindow):
 
 
 class Novasenha(JanelaComIcone, Ui_Novasenha):
-    def __init__(self, nome, email, parent=None):
+    def __init__(self, cursor, parent=None):
         super().__init__(parent)
+        self.cursor = cursor
         self.setupUi(self)
-        self.nome = nome
-        self.email = email
-        self.ChangeButton.clicked.connect(self.trocar_senha)
+        self.ChangeButton.clicked.connect(self.verifica_senha)
 
-    def trocar_senha(self):
-        nova_senha_usuario = self.NovaSenhaInput.text()
-        if nova_senha_usuario:
-            if self.verifica_senha(nova_senha_usuario):
-                try:
-                    update_senha = 'UPDATE clientes SET Senha = %s WHERE NomeCliente = %s AND Email = %s'
-                    cursor.execute(update_senha, (nova_senha_usuario, self.nome, self.email))
-                    conexao.commit()
-                    print("Senha trocada com sucesso!")
-                    self.NovaSenhaInput.setText('A sua senha foi atualizada com sucesso!')
-                except mysql.connector.Error as err:
-                    print(f"Erro ao trocar a senha: {err}")
-            else:
-                print("A nova senha não corresponde à senha atual.")
+    def verifica_senha(self):
+        senha = self.SenhaAtualInput.text()
+        if self.verifica_senha_no_banco(senha):
+            print("Senha correta!")
         else:
-            print("Por favor, insira a nova senha.")
+            print("Senha incorreta!")
 
-    def verifica_senha(self, senha):
+    def verifica_senha_no_banco(self, senha):
         try:
-            query = 'SELECT * FROM clientes WHERE NomeCliente = %s AND Email = %s AND Senha = %s'
-            cursor.execute(query, (self.nome, self.email, senha))
-            resultado = cursor.fetchone()
+            query = 'SELECT * FROM clientes WHERE Senha = %s'
+            self.cursor.execute(query, (senha,))
+            resultado = self.cursor.fetchone()
 
             if resultado:
                 return True
             else:
                 return False
         except mysql.connector.Error as err:
-            print(f"Erro ao verificar a senha: {err}")
+            print(f"Erro ao verificar senha no banco: {err}")
             return False
 
 
 class Conta(JanelaComIcone, Ui_Conta):
-    def __init__(self, parent=None):
+    def __init__(self, cursor, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+        self.senha = Novasenha(cursor)
+        self.SenhaBtn.clicked.connect(self.abrir_tela_senha)
+
+    def abrir_tela_senha(self):
+        self.senha.show()
 
 
 class EsqueciSenha(JanelaComIcone, Ui_esqueciSenha):
@@ -166,7 +160,7 @@ class Inicial(JanelaComIcone, Ui_MainMenu):
         self.ContaBtn.clicked.connect(self.abrir_conta)
         self.livros = Livros()
         self.carrinho = Carrinho()
-        self.conta = Conta()
+        self.conta = Conta(cursor)
 
     def abrir_livros(self):
         self.livros.show()
