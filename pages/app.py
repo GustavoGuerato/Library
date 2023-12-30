@@ -141,12 +141,12 @@ class Livros(JanelaComIcone, Ui_livros):
 
     def emprestar_livro(self):
         if self.listaLivros.currentItem():
-            livro_id = self.listaLivros.currentItem().text().split('-')[0].strip()
+            livro_titulo = self.listaLivros.currentItem().text()
 
             try:
-                update_disponibilidade = 'UPDATE livros SET status = 0 WHERE id = %s'
-                cursor.execute(update_disponibilidade, (livro_id,))
-                print(f"Livro com ID {livro_id} emprestado com sucesso!")
+                update_disponibilidade = 'UPDATE livros SET status = 0 WHERE titulo = %s'
+                cursor.execute(update_disponibilidade, (livro_titulo,))
+                print(f"Livro '{livro_titulo}' emprestado com sucesso!")
                 conexao.commit()
             except mysql.connector.Error as err:
                 print(f"Erro ao marcar livro como emprestado: {err}")
@@ -154,7 +154,6 @@ class Livros(JanelaComIcone, Ui_livros):
             except Exception as e:
                 print(f"Erro desconhecido: {e}")
                 conexao.rollback()
-
 
 class Login(JanelaComIcone, Ui_Login):
     def __init__(self, parent=None):
