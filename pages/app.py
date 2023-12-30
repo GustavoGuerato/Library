@@ -23,6 +23,12 @@ class JanelaComIcone(QMainWindow):
         self.setWindowIcon(icone)
 
 
+class Carrinho(JanelaComIcone, Ui_carrinho):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
+
+
 class EsqueciSenha(JanelaComIcone, Ui_esqueciSenha):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -108,16 +114,21 @@ class Cadastro(JanelaComIcone, Ui_CadastroWindow):
         except mysql.connector.Error as err:
             print(f"Erro ao adicionar cliente: {err}")
 
+
 class Inicial(JanelaComIcone, Ui_MainMenu):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
         self.LivrosBtn.clicked.connect(self.abrir_livros)
+        self.CarrinhoBtn.clicked.connect(self.abrir_carrinho)
         self.livros = Livros()
+        self.carrinho = Carrinho()
 
     def abrir_livros(self):
         self.livros.show()
 
+    def abrir_carrinho(self):
+        self.carrinho.show()
 
 class Livros(JanelaComIcone, Ui_livros):
     def __init__(self, parent=None):
@@ -125,6 +136,7 @@ class Livros(JanelaComIcone, Ui_livros):
         self.setupUi(self)
         self.carregar_livros()
         self.pushButton_2.clicked.connect(self.emprestar_livro)
+        self.pushButton.clicked.connect(self.colocar_no_carrinho)
 
     def carregar_livros(self):
         try:
@@ -154,6 +166,23 @@ class Livros(JanelaComIcone, Ui_livros):
             except Exception as e:
                 print(f"Erro desconhecido: {e}")
                 conexao.rollback()
+
+    def colocar_no_carrinho(self):
+        if self.listaLivros.currentItem():
+            livro_titulo = self.listaLivros.currentItem().text()
+
+            try:
+                update_disponibilidade = 'UPDATE livros SET carrinho = 1 WHERE titulo = %s'
+                cursor.execute(update_disponibilidade, (livro_titulo,))
+                print(f"Livro '{livro_titulo}' foi colocado no carrinho com sucesso!")
+                conexao.commit()
+            except mysql.connector.Error as err:
+                print(f"Erro ao marcar livro como emprestado: {err}")
+                conexao.rollback()
+            except Exception as e:
+                print(f"Erro desconhecido: {e}")
+                conexao.rollback()
+
 
 class Login(JanelaComIcone, Ui_Login):
     def __init__(self, parent=None):
