@@ -156,7 +156,7 @@ class Livros(JanelaComIcone, Ui_livros):
 
         def carregar_livros_carrinho(self):
             try:
-                query = 'SELECT Titulo FROM livros WHERE status = 1 AND carrinho = 1'
+                query = 'SELECT Titulo FROM livros WHERE status = 0 AND carrinho = 1'
                 cursor.execute(query)
                 livros = cursor.fetchall()
 
@@ -190,12 +190,12 @@ class Livros(JanelaComIcone, Ui_livros):
             livro_titulo = self.listaLivros.currentItem().text()
 
             try:
-                update_disponibilidade = 'UPDATE livros SET carrinho = 1 WHERE titulo = %s'
+                update_disponibilidade = 'UPDATE livros SET carrinho = 1, status = 0 WHERE titulo = %s'
                 cursor.execute(update_disponibilidade, (livro_titulo,))
                 print(f"Livro '{livro_titulo}' foi colocado no carrinho com sucesso!")
                 conexao.commit()
             except mysql.connector.Error as err:
-                print(f"Erro ao marcar livro como emprestado: {err}")
+                print(f"Erro ao colocar livro no carrinho: {err}")
                 conexao.rollback()
             except Exception as e:
                 print(f"Erro desconhecido: {e}")
@@ -207,6 +207,8 @@ class Carrinho(JanelaComIcone, Ui_carrinho):
         super().__init__(parent)
         self.setupUi(self)
         self.carregar_livros_carrinho()
+        self.FinishBtn.clicked.connect(self.finalizar_emprestimo)
+        self.DevolverBtn.clicked.connect(self.devolver_livro)
 
     def carregar_livros_carrinho(self):
         try:
@@ -222,6 +224,34 @@ class Carrinho(JanelaComIcone, Ui_carrinho):
 
         except mysql.connector.Error as err:
             print(f"Erro ao carregar livros do carrinho: {err}")
+
+    def finalizar_emprestimo(self):
+        livro_titulo = self.listaCarrinho.currentItem().text()
+        try:
+            update_disponibilidade = 'UPDATE livros SET carrinho = 0 WHERE titulo = %s'
+            cursor.execute(update_disponibilidade, (livro_titulo,))
+            print(f"Livro '{livro_titulo}' emprestado com sucesso!")
+            conexao.commit()
+        except mysql.connector.Error as err:
+            print(f"Erro ao marcar livro como emprestado: {err}")
+            conexao.rollback()
+        except Exception as e:
+            print(f"Erro desconhecido: {e}")
+            conexao.rollback()
+
+    def devolver_livro(self):
+        livro_titulo = self.listaCarrinho.currentItem().text()
+        try:
+            update_disponibilidade = 'UPDATE livros SET carrinho = 0, status = 1 WHERE titulo = %s'
+            cursor.execute(update_disponibilidade, (livro_titulo,))
+            print(f"Livro '{livro_titulo}' foi devolvido com sucesso!")
+            conexao.commit()
+        except mysql.connector.Error as err:
+            print(f"Erro ao marcar livro como devolvido: {err}")
+            conexao.rollback()
+        except Exception as e:
+            print(f"Erro desconhecido: {e}")
+            conexao.rollback()
 
 
 class Login(JanelaComIcone, Ui_Login):
