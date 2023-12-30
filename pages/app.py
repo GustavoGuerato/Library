@@ -7,6 +7,8 @@ from Livros import Ui_MainWindow as Ui_livros
 from PaginaInicial import Ui_MainWindow as Ui_MainMenu
 from esqueciSenha import Ui_MainWindow as Ui_esqueciSenha
 from Carrinho import Ui_MainWindow as Ui_carrinho
+from Conta import Ui_MainWindow as Ui_Conta
+from NovaSenha import Ui_MainWindow as Ui_Novasenha
 import mysql.connector
 import string
 import random
@@ -21,6 +23,52 @@ class JanelaComIcone(QMainWindow):
     def definir_icone_janela(self):
         icone = QIcon('../LibraConnect.ico')
         self.setWindowIcon(icone)
+
+
+class Novasenha(JanelaComIcone, Ui_Novasenha):
+    def __init__(self, nome, email, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
+        self.nome = nome
+        self.email = email
+        self.ChangeButton.clicked.connect(self.trocar_senha)
+
+    def trocar_senha(self):
+        nova_senha_usuario = self.NovaSenhaInput.text()
+        if nova_senha_usuario:
+            if self.verifica_senha(nova_senha_usuario):
+                try:
+                    update_senha = 'UPDATE clientes SET Senha = %s WHERE NomeCliente = %s AND Email = %s'
+                    cursor.execute(update_senha, (nova_senha_usuario, self.nome, self.email))
+                    conexao.commit()
+                    print("Senha trocada com sucesso!")
+                    self.NovaSenhaInput.setText('A sua senha foi atualizada com sucesso!')
+                except mysql.connector.Error as err:
+                    print(f"Erro ao trocar a senha: {err}")
+            else:
+                print("A nova senha não corresponde à senha atual.")
+        else:
+            print("Por favor, insira a nova senha.")
+
+    def verifica_senha(self, senha):
+        try:
+            query = 'SELECT * FROM clientes WHERE NomeCliente = %s AND Email = %s AND Senha = %s'
+            cursor.execute(query, (self.nome, self.email, senha))
+            resultado = cursor.fetchone()
+
+            if resultado:
+                return True
+            else:
+                return False
+        except mysql.connector.Error as err:
+            print(f"Erro ao verificar a senha: {err}")
+            return False
+
+
+class Conta(JanelaComIcone, Ui_Conta):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
 
 
 class EsqueciSenha(JanelaComIcone, Ui_esqueciSenha):
@@ -115,14 +163,19 @@ class Inicial(JanelaComIcone, Ui_MainMenu):
         self.setupUi(self)
         self.LivrosBtn.clicked.connect(self.abrir_livros)
         self.CarrinhoBtn.clicked.connect(self.abrir_carrinho)
+        self.ContaBtn.clicked.connect(self.abrir_conta)
         self.livros = Livros()
         self.carrinho = Carrinho()
+        self.conta = Conta()
 
     def abrir_livros(self):
         self.livros.show()
 
     def abrir_carrinho(self):
         self.carrinho.show()
+
+    def abrir_conta(self):
+        self.conta.show()
 
 
 class Livros(JanelaComIcone, Ui_livros):
@@ -147,27 +200,6 @@ class Livros(JanelaComIcone, Ui_livros):
 
         except mysql.connector.Error as err:
             print(f"Erro ao carregar livros: {err}")
-
-    class Carrinho(JanelaComIcone, Ui_carrinho):
-        def __init__(self, parent=None):
-            super().__init__(parent)
-            self.setupUi(self)
-            self.carregar_livros_carrinho()
-
-        def carregar_livros_carrinho(self):
-            try:
-                query = 'SELECT Titulo FROM livros WHERE status = 0 AND carrinho = 1'
-                cursor.execute(query)
-                livros = cursor.fetchall()
-
-                self.listaCarrinho.clear()
-
-                for livro in livros:
-                    item = QListWidgetItem(livro[0])
-                    self.listaCarrinho.addItem(item)
-
-            except mysql.connector.Error as err:
-                print(f"Erro ao carregar livros do carrinho: {err}")
 
     def emprestar_livro(self):
         if self.listaLivros.currentItem():
