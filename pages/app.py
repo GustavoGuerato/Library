@@ -31,45 +31,29 @@ class Novasenha(JanelaComIcone, Ui_Novasenha):
         self.cursor = cursor
         self.nome = None
         self.email = None
+        self.senha_atual = None
         self.setupUi(self)
         self.ChangeButton.clicked.connect(self.alterar_senha)
 
-    def set_info(self, nome, email):
+    def set_info(self, nome, email, senha_atual):
         self.nome = nome
         self.email = email
-
-    def verifica_senha_no_banco(self, senha):
-        try:
-            query = 'SELECT * FROM clientes WHERE NomeCliente = %s AND Email = %s AND Senha = %s'
-            self.cursor.execute(query, (self.nome, self.email, senha))
-            resultado = self.cursor.fetchone()
-
-            if resultado:
-                return True
-            else:
-                return False
-        except mysql.connector.Error as err:
-            print(f"Erro ao verificar senha no banco: {err}")
-            return False
+        self.senha_atual = senha_atual
 
     def alterar_senha(self):
         nova_senha = self.NovaSenhaInput.text()
         confirma_senha = self.confirmaSenhaInput.text()
 
-        if nova_senha and confirma_senha and nova_senha == confirma_senha:
-            if self.verifica_senha_no_banco(nova_senha):
-                try:
-                    update_senha = 'UPDATE clientes SET Senha = %s WHERE NomeCliente = %s AND Email = %s'
-                    self.cursor.execute(update_senha, (nova_senha, self.nome, self.email))
-                    self.cursor.commit()
-                    print("Senha alterada com sucesso!")
-                except mysql.connector.Error as err:
-                    print(f"Erro ao alterar a senha: {err}")
+        try:
+            if nova_senha and confirma_senha and nova_senha != self.senha_atual:
+                update_senha = 'UPDATE clientes SET Senha = %s WHERE NomeCliente = %s AND Email = %s'
+                self.cursor.execute(update_senha, (nova_senha, self.nome, self.email))
+                self.cursor.commit()
+                print("Senha alterada com sucesso!")
             else:
-                print("A nova senha não corresponde à senha atual.")
-        else:
-            print("Por favor, insira e confirme a nova senha corretamente.")
-
+                print("Por favor, insira e confirme uma nova senha diferente da atual.")
+        except Exception as e:
+            print(f"Erro ao alterar a senha: {e}")
 
 
 class Conta(JanelaComIcone, Ui_Conta):
