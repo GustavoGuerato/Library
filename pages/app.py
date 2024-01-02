@@ -9,6 +9,7 @@ from esqueciSenha import Ui_MainWindow as Ui_esqueciSenha
 from Carrinho import Ui_MainWindow as Ui_carrinho
 from Conta import Ui_MainWindow as Ui_Conta
 from NovaSenha import Ui_MainWindow as Ui_Novasenha
+from Config import Ui_MainWindow as Ui_Config
 import mysql.connector
 import string
 import random
@@ -54,6 +55,21 @@ class Novasenha(JanelaComIcone, Ui_Novasenha):
                 print("Por favor, insira e confirme uma nova senha diferente da atual.")
         except Exception as e:
             print(f"Erro ao alterar a senha: {e}")
+
+
+class Config(JanelaComIcone, Ui_Config):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
+
+    def dark_mode(self):
+        pass
+
+    def white_mode(self):
+        pass
+
+    def trocar_idioma(self):
+        pass
 
 
 class Conta(JanelaComIcone, Ui_Conta):
@@ -163,6 +179,7 @@ class Inicial(JanelaComIcone, Ui_MainMenu):
         self.livros = Livros()
         self.carrinho = Carrinho()
         self.conta = Conta(cursor)
+        self.config = Config()
 
     def abrir_livros(self):
         self.livros.show()
@@ -172,6 +189,9 @@ class Inicial(JanelaComIcone, Ui_MainMenu):
 
     def abrir_conta(self):
         self.conta.show()
+
+    def abrir_config(self):
+        self.config.show()
 
 
 class Livros(JanelaComIcone, Ui_livros):
