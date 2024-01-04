@@ -1,4 +1,5 @@
 from PyQt6.QtWidgets import QApplication, QMainWindow, QListWidgetItem, QCheckBox, QLabel
+
 from PyQt6.QtGui import QIcon, QPalette, QColor
 from PyQt6.QtCore import Qt
 from login import Ui_MainWindow as Ui_Login
@@ -62,7 +63,15 @@ class Config(JanelaComIcone, Ui_Config):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+
         self.DarkCheckBox.clicked.connect(self.dark_mode)
+        self.IdiomaBox.currentIndexChanged.connect(self.trocar_idioma)
+
+        self.translations = {
+            "Dark Mode": {"Portugues": "Modo Escuro", "Ingles": "Dark Mode", "Espanhol": "Modo Oscuro"},
+            "White mode": {"Portugues": "Modo Claro", "Ingles": "White Mode", "Espanhol": "Modo Claro"},
+            # Adicione mais traduções conforme necessário
+        }
 
     def dark_mode(self):
         palette = self.palette()
@@ -75,31 +84,49 @@ class Config(JanelaComIcone, Ui_Config):
             palette.setColor(QPalette.ColorRole.WindowText, QColor('#000000'))
 
         self.setPalette(palette)
-        self.update()
-        return f"Alterado para o modo escuro: {self.DarkCheckBox.isChecked()}"
-
-    def white_mode(self):
-        palette = self.palette()
-
-        if self.DarkCheckBox.isChecked():
-            palette.setColor(QPalette.ColorRole.Window, QColor('#ffffff'))
-            palette.setColor(QPalette.ColorRole.WindowText, QColor('#000000'))
-        else:
-            palette.setColor(QPalette.ColorRole.Window, QColor('#333333'))
-            palette.setColor(QPalette.ColorRole.WindowText, QColor('#ffffff'))
-
-        self.setPalette(palette)
-        self.update()
-        return f"Alterado para o modo claro: {not self.DarkCheckBox.isChecked()}"
 
     def trocar_idioma(self):
         idioma_selecionado = self.IdiomaBox.currentText()
 
-        for widget in self.findChildren(QLabel):
-            original_text = widget.text()
+        for key, translation in self.translations.items():
+            translated_text = translation.get(idioma_selecionado, key)
+            widget = self.findChild(QCheckBox, key)
+            if widget:
+                widget.setText(translated_text)
 
-            if original_text in self.translations:
-                translated_text = self.translations[original_text][idioma_selecionado]
+
+class Config(JanelaComIcone, Ui_Config):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
+
+        self.DarkCheckBox.clicked.connect(self.dark_mode)
+        self.IdiomaBox.currentIndexChanged.connect(self.trocar_idioma)
+
+        self.translations = {
+            "Dark Mode": {"Portugues": "Modo Escuro", "Ingles": "Dark Mode", "Espanhol": "Modo Oscuro"},
+            "White mode": {"Portugues": "Modo Claro", "Ingles": "White Mode", "Espanhol": "Modo Claro"},
+        }
+
+    def dark_mode(self):
+        palette = self.palette()
+
+        if self.DarkCheckBox.isChecked():
+            palette.setColor(QPalette.ColorRole.Window, QColor('#333333'))
+            palette.setColor(QPalette.ColorRole.WindowText, QColor('#ffffff'))
+        else:
+            palette.setColor(QPalette.ColorRole.Window, QColor('#ffffff'))
+            palette.setColor(QPalette.ColorRole.WindowText, QColor('#000000'))
+
+        self.setPalette(palette)
+
+    def trocar_idioma(self):
+        idioma_selecionado = self.IdiomaBox.currentText()
+
+        for key, translation in self.translations.items():
+            translated_text = translation.get(idioma_selecionado, key)
+            widget = self.findChild(QCheckBox, key)
+            if widget:
                 widget.setText(translated_text)
 
 
