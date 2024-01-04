@@ -1,6 +1,6 @@
-from time import sleep
-from PyQt6.QtWidgets import QApplication, QMainWindow, QListWidgetItem
-from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication, QMainWindow, QListWidgetItem, QCheckBox, QLabel
+from PyQt6.QtGui import QIcon, QPalette, QColor
+from PyQt6.QtCore import Qt
 from login import Ui_MainWindow as Ui_Login
 from signup import Ui_CadastroWindow
 from Livros import Ui_MainWindow as Ui_livros
@@ -14,6 +14,7 @@ import mysql.connector
 import string
 import random
 import sys
+from time import sleep
 
 
 class JanelaComIcone(QMainWindow):
@@ -61,15 +62,45 @@ class Config(JanelaComIcone, Ui_Config):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+        self.DarkCheckBox.clicked.connect(self.dark_mode)
 
     def dark_mode(self):
-        pass
+        palette = self.palette()
+
+        if self.DarkCheckBox.isChecked():
+            palette.setColor(QPalette.ColorRole.Window, QColor('#333333'))
+            palette.setColor(QPalette.ColorRole.WindowText, QColor('#ffffff'))
+        else:
+            palette.setColor(QPalette.ColorRole.Window, QColor('#ffffff'))
+            palette.setColor(QPalette.ColorRole.WindowText, QColor('#000000'))
+
+        self.setPalette(palette)
+        self.update()
+        return f"Alterado para o modo escuro: {self.DarkCheckBox.isChecked()}"
 
     def white_mode(self):
-        pass
+        palette = self.palette()
+
+        if self.DarkCheckBox.isChecked():
+            palette.setColor(QPalette.ColorRole.Window, QColor('#ffffff'))
+            palette.setColor(QPalette.ColorRole.WindowText, QColor('#000000'))
+        else:
+            palette.setColor(QPalette.ColorRole.Window, QColor('#333333'))
+            palette.setColor(QPalette.ColorRole.WindowText, QColor('#ffffff'))
+
+        self.setPalette(palette)
+        self.update()
+        return f"Alterado para o modo claro: {not self.DarkCheckBox.isChecked()}"
 
     def trocar_idioma(self):
-        pass
+        idioma_selecionado = self.IdiomaBox.currentText()
+
+        for widget in self.findChildren(QLabel):
+            original_text = widget.text()
+
+            if original_text in self.translations:
+                translated_text = self.translations[original_text][idioma_selecionado]
+                widget.setText(translated_text)
 
 
 class Conta(JanelaComIcone, Ui_Conta):
@@ -176,6 +207,7 @@ class Inicial(JanelaComIcone, Ui_MainMenu):
         self.LivrosBtn.clicked.connect(self.abrir_livros)
         self.CarrinhoBtn.clicked.connect(self.abrir_carrinho)
         self.ContaBtn.clicked.connect(self.abrir_conta)
+        self.ConfigBtn.clicked.connect(self.abrir_config)
         self.livros = Livros()
         self.carrinho = Carrinho()
         self.conta = Conta(cursor)
